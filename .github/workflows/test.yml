@@ -14,7 +14,7 @@ jobs:
       - name: Set up SSH known hosts
         run: >-
           ssh-keyscan -t rsa ec2-3-95-16-153.compute-1.amazonaws.com >>
-          ~/.ssh/id_rsa.pub
+          ~/.ssh/known_hosts
       - name: Deploy via SSH
         env:
           SSH_PRIVATE_KEY: '${{ secrets.SSH_PRIVATE_KEY }}'
