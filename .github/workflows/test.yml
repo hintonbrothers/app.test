@@ -1,4 +1,4 @@
-name: Deploy to EC2
+name: Deploy-To-EC2-1
 'on':
   push:
     branches:
@@ -13,7 +13,7 @@ jobs:
         run: sudo apt-get install openssh-client -y
       - name: Set up SSH known hosts
         run: >-
-          ssh-keyscan -t rsa 3.95.16.153 >>
+          ssh-keyscan -t rsa ec2-3-95-16-153.compute-1.amazonaws.com >>
           ~/.ssh/known_hosts
       - name: Deploy via SSH
         env:
