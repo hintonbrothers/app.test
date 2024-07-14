@@ -1,32 +1,26 @@
-name: Deploy-To-EC2-2
-'on':
+name: EC2 Deployment
+
+on:
   push:
     branches:
       - master
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Configure SSH connection
+        uses: appleboy/ssh-action@v1
         with:
-          node-version: '22.4.1'
-      - name: Install dependencies
-        run: npm install
-      - name: Build project
-        run: npm run build
-      - name: Copy files via SSH
-        uses: appleboy/scp-action@v0.1.0
+          host: "${{ secrets.EC2_INSTANCE_APPTEST_IP }}"
+          username: 'ubuntu'
+          private-key: "${{ secrets.SSH_PRIVATE_KEY }}"
+      - name: Deploy to EC2
+        uses: aws-actions/deploy-ec2@v1
         with:
-          host: '${{ secrets.EC2_INSTANCE_APPTEST_IP }}'
-          username: ubuntu
-          key: '${{ secrets.EC2_SSH_PRIVATE_KEY }}'
-          source: build/*
-          target: /var/www/myapp/
-      - name: Restart Nginx
-        run: >
-          ssh -i ${{ secrets.SSH_PRIVATE_KEY }} -o StrictHostKeyChecking=no ${{
-          secrets.EC2_USER }}@${{ secrets.EC2_INSTANCE_APPTEST_IP }} "sudo systemctl restart
-          nginx"
+          instance-ip: 'ec2-3-95-16-153.compute-1.amazonaws.com'
+          role-arn: 'arn:aws:iam::471112994860:role/EC2-Deployment-Role'
+          bucket-name: 'my-deployment-bucket'
+          deploy-path: '/var/www/htdocs'
