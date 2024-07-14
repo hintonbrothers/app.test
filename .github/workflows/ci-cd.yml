@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: Deployment to EC2
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '22.4.1'
+          node-version: 'current.x'
 
       - name: Install dependencies
         run: npm install
