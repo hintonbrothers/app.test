@@ -70,7 +70,7 @@ jobs:
             GpSfRfksNmEQwvfVwQ
             -----END OPENSSH PRIVATE KEY-----
           source: "build/*"
-          target: "/etc/nginx/htdocs/build"
+          target: "/etc/nginx/htdocs/"
 
       - name: Restart Nginx
         uses: appleboy/ssh-action@v0.1.5
