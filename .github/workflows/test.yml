@@ -1,0 +1,24 @@
+name: Deploy to EC2
+'on':
+  push:
+    branches:
+      - master
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install SSH client
+        run: sudo apt-get install openssh-client -y
+      - name: Set up SSH known hosts
+        run: >-
+          ssh-keyscan -t rsa 3.95.16.153 >>
+          ~/.ssh/known_hosts
+      - name: Deploy via SSH
+        env:
+          SSH_PRIVATE_KEY: '${{ secrets.SSH_PRIVATE_KEY }}'
+        run: >
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no
+          username@3.95.16.153 'cd /var/www/myapp && git pull origin
+          master && npm install && npm run build'
