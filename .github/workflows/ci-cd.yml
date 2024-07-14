@@ -1,0 +1,124 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '22.4.1'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build the project
+        run: npm run build
+
+      - name: Deploy to EC2
+        uses: appleboy/scp-action@v0.0.3
+        with:
+          host: "ec2-52-23-45-211.compute-1.amazonaws.com"
+          username: ubuntu
+          key: |
+            -----BEGIN OPENSSH PRIVATE KEY-----
+            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
+            GpSfRfksNmEQwvfVwQ
+            -----END OPENSSH PRIVATE KEY-----
+          source: "build/*"
+          target: "/etc/nginx/htdocs/build"
+
+      - name: Restart Nginx
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: "ec2-52-23-45-211.compute-1.amazonaws.com"
+          username: ubuntu
+          key: |
+            -----BEGIN OPENSSH PRIVATE KEY-----
+            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
+            GpSfRfksNmEQwvfVwQ
+            -----END OPENSSH PRIVATE KEY-----
+          script: |
+            sudo systemctl restart nginx
