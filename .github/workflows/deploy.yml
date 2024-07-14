@@ -2,7 +2,7 @@ name: Deploy to EC2
 'on':
   push:
     branches:
-      - master
+      - main
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -12,7 +12,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: '22.4.1'
       - name: Install dependencies
         run: npm install
       - name: Build project
@@ -21,12 +21,12 @@ jobs:
         uses: appleboy/scp-action@v0.1.0
         with:
           host: '${{ secrets.EC2_INSTANCE_APPTEST_IP }}'
-          username: 'ubuntu'
+          username: ubuntu
           key: '${{ secrets.EC2_SSH_PRIVATE_KEY }}'
           source: build/*
-          target: /etc/nginx/htdocs
+          target: /var/www/myapp/
       - name: Restart Nginx
         run: >
-          ssh -i ${{ secrets.EC2_SSH_PRIVATE_KEY }} -o StrictHostKeyChecking=no ${{
-          secrets.EC2_USER }}@${{ secrets.EC2_INSTANCE_IP }} "sudo systemctl restart
+          ssh -i ${{ secrets.SSH_PRIVATE_KEY }} -o StrictHostKeyChecking=no ${{
+          secrets.EC2_USER }}@${{ secrets.EC2_INSTANCE_APPTEST_IP }} "sudo systemctl restart
           nginx"
